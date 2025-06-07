@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Germany Map – Mark Cities</title>
+  <style>
+    body { font-family: sans-serif; }
+    #autocomplete { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; position: absolute; background:white; width: 200px;}
+    #autocomplete div { padding: 4px; cursor: pointer; }
+    #autocomplete div:hover { background: #efefef; }
+
+    #city-list { margin: 1em 0; }
+    .marked-city { border: 1px solid #aaa; margin: 3px; display: inline-block; padding: 2px 8px; border-radius: 8px; background: #ddd; }
+    .remove-btn { color: red; cursor: pointer; margin-left: 8px;}
+    #svg-outer-box {
+      max-height: 90vh;
+      height: 90vh;
+      width: 100%;
+      overflow: auto;   /* enables scrolling if content is larger */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #svg-container svg {
+      height: 100%;
+      max-height: 90vh;
+      width: auto;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>Germany Map – Mark Cities</h2>
+
+  <div>
+    <input id="city-search" placeholder="Type city name…" autocomplete="off" style="width:200px">
+    <div id="autocomplete"></div>
+  </div>
+
+  <div id="city-list"></div>
+
+  <button id="download-btn">Download SVG</button>
+  <button id="share-btn">Copy Share Link</button>
+  <span id="share-status"></span>
+
+  <div id="svg-outer-box" style="max-height: 100vh; display: flex; justify-content: center; align-items: center; border: 1px solid #ccc;">
+    <div id="svg-container" style="height: 100%; width: 100%;"></div>
+  </div>
+
+  <script src="cities.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
