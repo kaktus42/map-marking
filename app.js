@@ -34,6 +34,12 @@ function ensureMarkerGroup() {
   }
 }
 
+function compareNames(a, b) {
+  if ( a.name < b.name ) return -1;
+  if ( a.name > b.name ) return 1;
+  return 0;
+}
+
 // --- 2. Autocomplete logic ---
 const searchInput = document.getElementById('city-search');
 const autocompleteDiv = document.getElementById('autocomplete');
@@ -227,6 +233,7 @@ function overlap(a, b) {
 function updateCityList() {
   const div = document.getElementById('city-list');
   div.innerHTML = '';
+  markedCities.sort(compareNames);
   markedCities.forEach(city => {
     const span = document.createElement('span');
     span.className = 'marked-city';
@@ -265,6 +272,7 @@ function updateShareURL() {
     return;
   }
   // use comma-separated city names
+  markedCities.sort(compareNames);
   const cityNames = markedCities.map(c=>encodeURIComponent(c.name)).join(",");
   const url = `${window.location.pathname}?cities=${cityNames}`;
   history.replaceState({}, '', url);
@@ -288,6 +296,7 @@ function restoreFromURL() {
   let urlCities = params.get('cities');
   if (urlCities) {
     let names = urlCities.split(',').map(decodeURIComponent);
+    names.sort();
     markedCities = [];
     for (let n of names) {
       let city = cities.find(c => c.name === n);
