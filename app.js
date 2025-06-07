@@ -1,9 +1,11 @@
 // ----- Parameters: Set according to your SVG map -----
 const SVG_FILENAME = "germany.svg";
 // You need to set these according to your SVG map's projection:
-const SVG_VIEWBOX = { minX: 0, minY: 0, width: 600, height: 800 };
-const MAP_MIN_LON = 5.866, MAP_MAX_LON = 15.042;
-const MAP_MIN_LAT = 47.270, MAP_MAX_LAT = 55.059;
+// const MAP_PAD_X = 30, MAP_PAD_Y = 30;
+const MAP_PAD_X = 0, MAP_PAD_Y = 0;
+const MAP_HEIGHT = 800, MAP_WIDTH = 600;
+const MAP_MIN_LON = 5.866 - 0.12, MAP_MAX_LON = 15.042 + 0.32;
+const MAP_MIN_LAT = 47.270 - 0.04, MAP_MAX_LAT = 55.059 + 0.16;
 
 //---------------------------------------------------------------------
 
@@ -104,9 +106,9 @@ function removeCity(cityName) {
 // --- 4. Map coords (lat/lon) to SVG x/y (Assuming simple equirectangular) ---
 function geoToSvg(lat, lon) {
   // Linearly scale longitude to viewBox x
-  const x = ((lon - MAP_MIN_LON) / (MAP_MAX_LON - MAP_MIN_LON)) * SVG_VIEWBOX.width + SVG_VIEWBOX.minX;
+  const x = -MAP_PAD_X/2 + ((lon - MAP_MIN_LON) / (MAP_MAX_LON - MAP_MIN_LON)) * MAP_WIDTH;
   // Linearly scale latitude to viewBox y (SVG y grows downward; latitude grows upward)
-  const y = SVG_VIEWBOX.minY + SVG_VIEWBOX.height - ((lat - MAP_MIN_LAT) / (MAP_MAX_LAT - MAP_MIN_LAT)) * SVG_VIEWBOX.height;
+  const y = MAP_PAD_Y/2 + MAP_HEIGHT - ((lat - MAP_MIN_LAT) / (MAP_MAX_LAT - MAP_MIN_LAT)) * MAP_HEIGHT;
   return { x, y };
 }
 
@@ -116,8 +118,16 @@ function updateCityMarkers() {
   ensureMarkerGroup();
   const markerGroup = svgDoc.getElementById(cityMarkerGroupId);
   markerGroup.innerHTML = '';
-  markedCities.forEach(city => {
+  const N = markedCities.length;
+  let labelPositions = [];
+  let bboxes = [];
+  markedCities.sort((a, b) => {
+    if (b.lat !== a.lat) return b.lat - a.lat;
+    return a.lon - b.lon;
+  });
+  markedCities.forEach((city, i) => {
     const {x, y} = geoToSvg(city.lat, city.lon);
+
     // Draw marker
     const marker = document.createElementNS('http://www.w3.org/2000/svg','circle');
     marker.setAttribute('cx', x);
@@ -128,18 +138,89 @@ function updateCityMarkers() {
 
     // City name label
     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.setAttribute('x', x + 13);
-    label.setAttribute('y', y + 4);
-    label.setAttribute('font-size', '18');
+    label.setAttribute('x', x);
+    label.setAttribute('y', y);
+    label.setAttribute('font-size', '15');
     label.setAttribute('fill', '#212121');
     label.setAttribute('font-family', 'sans-serif');
     label.textContent = city.name;
     label.setAttribute('pointer-events','none');
     markerGroup.appendChild(label);
 
+
+    let labelBbox = label.getBBox();
+    const rx = labelBbox.width/2 + 10; // ellipse width: label half width plus 18px margin
+    const ry = labelBbox.height/2 + 10; // ellipse height: label half height plus 18px margin
+
+
+    // // *** Add visible ellipse for demonstration ***
+    // const ellipse = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    // ellipse.setAttribute('cx', x - labelBbox.width/2);
+    // ellipse.setAttribute('cy', y);
+    // ellipse.setAttribute('rx', rx);
+    // ellipse.setAttribute('ry', ry);
+    // ellipse.setAttribute('stroke', 'black');
+    // ellipse.setAttribute('stroke-opacity', '0.2');
+    // ellipse.setAttribute('fill', 'none');
+    // markerGroup.appendChild(ellipse);
+
+    // let _tries = 0, dot, _theta, _dx, _dy;
+    // while(_tries < 12) {
+    //   const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    //   let _theta = _tries * 2 * Math.PI / 12; // steps around ellipse
+    //   const _dx = -rx * Math.sin(_theta);
+    //   const _dy =  ry * Math.cos(_theta);
+    //   console.log(_dx, _dy)
+    //   dot.setAttribute('cx', _dx + x - labelBbox.width/2);
+    //   dot.setAttribute('cy', _dy + y);
+    //   dot.setAttribute('r', 1);
+    //   dot.setAttribute('fill', 'black');
+    //   markerGroup.appendChild(dot);
+    //   _tries++;
+    // }
+
+
+    let doOverlap = true, found = false;
+    let tries = 0, lx, ly, angleDeg, transform;
+    while(tries < 12 && !found) {
+      const theta = (tries+6) * 2 * Math.PI / 12; // steps around ellipse
+      const dx = -rx * Math.sin(theta);
+      const dy =  ry * Math.cos(theta);
+
+      lx = x + dx - labelBbox.width/2;
+      ly = y + dy + labelBbox.height/2;
+
+      transform = `translate(${lx} ${ly})`;
+
+      label.setAttribute('x', lx);
+      label.setAttribute('y', ly);
+      // label.setAttribute('transform', transform);
+
+      labelBbox = label.getBBox();
+
+      doOverlap = bboxes.some(other => overlap(other, labelBbox));
+      if(!doOverlap) {
+        // Accept and render
+        found = true;
+      }
+
+      tries++;
+    }
+
+    bboxes.push(label.getBBox());
+
     // Optional: allow removing city by clicking marker:
     marker.addEventListener('click', () => removeCity(city.name));
   });
+}
+
+function overlap(a, b) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
 }
 
 // --- 6. List of currently marked cities ---

@@ -1,4 +1,5 @@
 const cities = [
+  { name: "Aachen", lat: 50.759, lon: 5.941 },
   { name: "Ahaus", lat: 52.083, lon: 7.017 },
   { name: "Ahrensburg", lat: 53.667, lon: 10.233 },
   { name: "Albstadt", lat: 48.217, lon: 9.033 },
@@ -42,7 +43,7 @@ const cities = [
   { name: "Bergisch Gladbach", lat: 50.983, lon: 7.133 },
   { name: "Bergkamen", lat: 51.617, lon: 7.633 },
   { name: "Bergneustadt", lat: 51.017, lon: 7.65 },
-  { name: "Berlin", lat: 52.533, lon: 13.3 },
+  { name: "Berlin", lat: 52.52, lon: 13.405 },
   { name: "Biberach an der Riß", lat: 48.1, lon: 9.783 },
   { name: "Bielefeld", lat: 52.017, lon: 8.533 },
   { name: "Bietigheim-Bissingen", lat: 48.95, lon: 9.133 },
