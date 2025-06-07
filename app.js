@@ -140,9 +140,9 @@ function updateCityMarkers() {
     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     label.setAttribute('x', x);
     label.setAttribute('y', y);
-    label.setAttribute('font-size', '15');
+    label.setAttribute('font-size', '16');
     label.setAttribute('fill', '#212121');
-    label.setAttribute('font-family', 'sans-serif');
+    label.setAttribute('font-family', '"Roboto Condensed",sans-serif');
     label.textContent = city.name;
     label.setAttribute('pointer-events','none');
     markerGroup.appendChild(label);
