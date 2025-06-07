@@ -210,7 +210,7 @@ function updateCityMarkers() {
     bboxes.push(label.getBBox());
 
     // Optional: allow removing city by clicking marker:
-    marker.addEventListener('click', () => removeCity(city.name));
+    // marker.addEventListener('click', () => removeCity(city.name));
   });
 }
 

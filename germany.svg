@@ -4,9 +4,18 @@
 <desc>Karte der Bundesländer; Quelle: https://commons.wikimedia.org/wiki/File:Karte_Bundesrepublik_Deutschland.svg</desc>
 <defs>
 <style type="text/css">
+:root {
+	--dunkelrosa: #d9248f;
+	--schwarz: #1e0c26;
+	--dunkelgrau: #2c424a;
+	--hellgrau: #d9d9d9;
+	--orange: #f4a400;
+	--hellgruen: #98cfad;
+}
+
 #Deutschland {
   fill: none;
-  stroke: #d9d9d9;
+  stroke: var(--hellgrau);
   stroke-width:0.3;
 }
 
@@ -17,7 +26,7 @@
 
 #Regionen {
   fill: white;
-  stroke: #d9d9d9;
+  stroke: var(--hellgrau);
   stroke-width: 1.5	;
   opacity: 1;
 }
@@ -28,40 +37,34 @@
 #Regionen-Südwest { fill: url(#fillSüdwest) }
 #Regionen-Bayern { fill: url(#fillBayern) }
 
-.region {
-  opacity: 0.9;
-  //filter:brightness(1.1);
-}
+.region { opacity: 0.9 }
 
-.region:hover {
-  opacity: 0.7;
-}
+.region:hover { opacity: 0.7 }
 
 #city-markers-group circle {
-  fill: #f4a400;
-  stroke: #2c424a;
+  fill: var(--orange);
+  stroke: var(--dunkelgrau);
   stroke-width: 1;
 }
 </style>
 <pattern id="fillNord" patternUnits="userSpaceOnUse" width="10" height="10">
-  <rect width="10" height="10" fill="#d9248f" />
-  <!-- <line x1="5" y1="0" x2="5" y2="10" stroke="#2c424a" stroke-width="1"/> -->
+  <rect width="10" height="10" fill="var(--dunkelrosa)" />
   <circle cx="5" cy="5" r="1" fill="darkblue" opacity="0.4" />
 </pattern>
 <pattern id="fillWest" patternUnits="userSpaceOnUse" width="10" height="10">
-  <rect width="10" height="10" fill="#d9248f" />
+  <rect width="10" height="10" fill="var(--dunkelrosa)" />
   <line x1="0" y1="5" x2="5" y2="0" stroke="darkblue" stroke-width=".7" stroke-opacity="0.4"/>
 </pattern>
 <pattern id="fillOst" patternUnits="userSpaceOnUse" width="10" height="10">
-  <rect width="10" height="10" fill="#d9248f" />
+  <rect width="10" height="10" fill="var(--dunkelrosa)" />
   <circle cx="5" cy="5" r="1.5" fill="none" stroke="darkblue" stroke-width=".7" stroke-opacity="0.4" />
 </pattern>
 <pattern id="fillSüdwest" patternUnits="userSpaceOnUse" width="20" height="10">
-  <rect width="20" height="10" fill="#d9248f" />
+  <rect width="20" height="10" fill="var(--dunkelrosa)" />
   <path d="M 2.5 5 Q 5 2.5, 10 5 T 17.5 5"  stroke="darkblue" stroke-width="1" stroke-opacity="0.4" fill="none"/>
 </pattern>
 <pattern id="fillBayern" patternUnits="userSpaceOnUse" width="10" height="10">
-  <rect width="10" height="10" fill="#d9248f" />
+  <rect width="10" height="10" fill="var(--dunkelrosa)" />
   <polygon points="5,0 5,5 5,5 0,5" stroke="darkblue" stroke-width="0.5" stroke-opacity="0.4" fill="none"/>
 </pattern>
 </defs>
